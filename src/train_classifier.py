@@ -13,6 +13,17 @@ import numpy as np
 import evaluate
 import os
 
+# --- 0. VRAM Measurement SETUP ---
+if torch.cuda.is_available():
+    print("CUDA is available. VRAM measurement is enabled.")
+    # Reset peak memory stats
+    torch.cuda.reset_peak_memory_stats()
+    # Get the current device
+    device = torch.cuda.current_device()
+else:
+    print("CUDA is not available. VRAM measurement is disabled.")
+    device = None
+
 # --- 1. CONFIGURATION ---
 MODEL_ID = "microsoft/deberta-v3-base" 
 TRAIN_DATA_FILE = "data/train.csv"
@@ -71,8 +82,8 @@ model.enable_input_require_grads()
 
 # --- 5. LoRA CONFIG FOR SEQ_CLS (Updated Hyperparameters) ---
 peft_config = LoraConfig(
-    r=32,          # Adjusted: Lowered R from 64 to 32
-    lora_alpha=64, # Adjusted: Set alpha = 2r for better scaling
+    r=256,
+    lora_alpha=512,
     lora_dropout=0.05,
     bias="none",
     task_type="SEQ_CLS",
@@ -108,7 +119,7 @@ def compute_metrics(eval_pred):
 training_args = TrainingArguments(
     output_dir=OUTPUT_DIR,
     num_train_epochs=5, # Adjusted: Increased from 3 to 5
-    per_device_train_batch_size=32, 
+    per_device_train_batch_size=64, 
     # CRITICAL CHANGE: Increased LR for LoRA training
     learning_rate=1e-4, 
     weight_decay=0.0, # Adjusted: Set to 0.0 to focus on adapter training
@@ -140,6 +151,13 @@ trainer = Trainer(
 print("Starting training for Sequence Classification...")
 trainer.train()
 
-# --- 10. SAVE ---
+# --- 10. VRAM MEASUREMENT REPORTING ---
+if device is not None:
+    peak_vram = torch.cuda.max_memory_allocated(device) / (1024**2) # Convert bytes to MB
+    print(f"\n--- VRAM Usage ---")
+    print(f"  Peak VRAM allocated during training: {peak_vram:.2f} MB")
+
+
+# --- 11. SAVE ---
 trainer.save_model(OUTPUT_DIR)
 print(f"Training complete. Final model saved to {OUTPUT_DIR}")
