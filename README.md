@@ -9,3 +9,9 @@ Performance Details
 * Runtime: 1.3153 s
 * Samples per Second: 1520.619
 * Steps per Second: 24.330
+
+80/10/10
+Training/Validation/Test
+
+Generated data size: 20000 samples
+
