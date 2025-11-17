@@ -1,7 +1,3 @@
-That's an impressive result\! A perfect score across all metrics on a held-out test set is the ideal outcome.
-
-Here is a comprehensive and professional GitHub README template you can use. I've filled in the details based on your successful $\text{DeBERTa-v3-base}$ fine-tuning for MITRE T1003.002 detection.
-
 -----
 
 # 🛡️ MITRE T1003.002 Credential Dumping Detector
