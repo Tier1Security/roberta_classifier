@@ -34,9 +34,6 @@ The model is trained as a multi-class sequence classifier to assign one of four 
 | MITRE Technique | MITRE ID | Description |
 | :--- | :--- | :--- |
 | Credential Dumping | **T1003.002** | Focuses on LSA Secrets or Security Account Manager (SAM) access. |
-| Account Discovery | **T1087.001** | Local account enumeration/discovery commands. |
-| OS Credential Access | **T1049** | System network connection discovery (e.g., netstat). |
-| Benign/Normal | **Benign** | Standard, non-malicious system activity. |
 
 -----
 
