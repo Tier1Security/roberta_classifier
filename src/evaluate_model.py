@@ -13,6 +13,17 @@ import evaluate
 import os
 import json
 
+# --- 0. VRAM Measurement Setup ---
+if torch.cuda.is_available():
+    print("CUDA is available. VRAM measurement is enabled.")
+    # Reset peak memory stats
+    torch.cuda.reset_peak_memory_stats()
+    # Get the current device
+    device = torch.cuda.current_device()
+else:
+    print("CUDA is not available. VRAM measurement is disabled.")
+    device = None
+
 # --- 1. CONFIGURATION ---
 BASE_MODEL_ID = "microsoft/deberta-v3-base" 
 ADAPTER_PATH = "models/final_deberta_model" # Directory where trainer.save_model() saved the LoRA adapter
@@ -101,28 +112,31 @@ trainer = Trainer(
     args=eval_args,
     tokenizer=tokenizer,
     compute_metrics=compute_metrics,
+    eval_dataset=processed_test_dataset,
 )
 
-# --- 7. EVALUATE ON TEST SET ---
-print("Starting final evaluation on held-out test set...")
-results = trainer.evaluate(eval_dataset=processed_test_dataset)
+# --- 7. RUN EVALUATION ---
+print("\n--- Running Final Evaluation on Unseen Test Data ---")
+results = trainer.evaluate()
 
-# --- 8. SAVE AND DISPLAY RESULTS ---
-# Manually add the model preparation time to the results
-# results["eval_model_preparation_time"] = model_prep_time
+print("\n--- Evaluation Results ---")
+print(f"  Accuracy: {results['eval_accuracy']:.4f}")
+print(f"  Precision: {results['eval_precision']:.4f}")
+print(f"  Recall: {results['eval_recall']:.4f}")
+print(f"  F1-Score: {results['eval_f1']:.4f}")
 
-# Save metrics to a JSON file
-output_eval_file = os.path.join(RESULT_OUTPUT_DIR, "final_evaluation_metrics.json")
-with open(output_eval_file, "w") as writer:
-    json.dump(results, writer, indent=4)
+# --- 8. VRAM Measurement Reporting ---
+if device is not None:
+    peak_vram = torch.cuda.max_memory_allocated(device) / (1024**2) # Convert bytes to MB
+    print(f"\n--- VRAM Usage ---")
+    print(f"  Peak VRAM allocated during evaluation: {peak_vram:.2f} MB")
 
-print("\n--- ✅ FINAL TEST SET METRICS ---")
-for key, value in results.items():
-    # Format floats to 4 decimal places for cleaner output
-    if isinstance(value, float):
-        print(f"  {key}: {value:.4f}")
-    else:
-        print(f"  {key}: {value}")
-print("----------------------------------")
 
-print(f"Evaluation complete. Results saved to {output_eval_file}")
+# --- 9. SAVE RESULTS ---
+os.makedirs(RESULT_OUTPUT_DIR, exist_ok=True)
+# Save the results to a JSON file
+results_file = os.path.join(RESULT_OUTPUT_DIR, "final_evaluation_metrics.json")
+with open(results_file, "w") as f:
+    json.dump(results, f, indent=4)
+
+print(f"\n--- ✅ Results saved to {results_file} ---")
