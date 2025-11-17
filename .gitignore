@@ -1,2 +1,3 @@
-models/
+models/final_deberta_model
 data/
+models/merged_deberta_model
