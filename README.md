@@ -33,7 +33,7 @@ The model is trained as a multi-class sequence classifier to assign one of four 
 
 | MITRE Technique | MITRE ID | Description |
 | :--- | :--- | :--- |
-| Credential Dumping | **T1003.002** | Focuses on LSA Secrets or Security Account Manager (SAM) access. |
+| Credential Dumping | **T1003.002** |	Focuses on accessing sensitive data stored in Registry Hives (specifically the SAM and SECURITY hives) or the LSA secrets. |
 
 -----
 
