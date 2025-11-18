@@ -40,3 +40,9 @@ Received input for prediction: 'reg save HKLM\SOFTWARE C:\temp\software_full.reg
 Prediction: 'T1003.002' with probability: 0.9883
 127.0.0.1 - - [18/Nov/2025 03:19:06] "POST /predict HTTP/1.1" 200 -
 127.0.0.1 - - [18/Nov/2025 03:20:36] "POST /predict HTTP/1.1" 400 -
+3.149.59.26 - - [18/Nov/2025 04:28:12] "GET / HTTP/1.1" 200 -
+3.149.59.26 - - [18/Nov/2025 04:30:08] "GET / HTTP/1.1" 200 -
+3.149.59.26 - - [18/Nov/2025 04:34:37] code 400, message Bad request syntax ('SSH-2.0-Go')
+3.149.59.26 - - [18/Nov/2025 04:34:37] "SSH-2.0-Go" HTTPStatus.BAD_REQUEST -
+3.149.59.26 - - [18/Nov/2025 04:37:04] code 400, message Bad request version ('À\x14À')
+3.149.59.26 - - [18/Nov/2025 04:37:04] "\x16\x03\x01\x00{\x01\x00\x00w\x03\x03¨\x89`8Ê¿\x0bz-ç[BÊ¦2\x14J\x9d \x0eÙº°}\x81i\x09ð0\x811?\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À" HTTPStatus.BAD_REQUEST -
